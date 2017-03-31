@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>d3.js with leaflet.js</title>
+
+    <link 
+        rel="stylesheet" 
+        href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
+    />
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <script
+        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+    </script>
+    
+</head>
+<body>
+
+  <div id="map" style="width: 1000px; height: 700px"></div>
+
+  <script type="text/javascript">
+  
+    // Base map
+    var mapboxLight = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
+    var mapboxStreets = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
+    var mapboxBrum = 'https://api.mapbox.com/styles/v1/gazaston/cj0trhrvk00jj2rnprxencri0/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(mapboxBrum);
+
+    // var layer = new L.StamenTileLayer('toner-background');
+    var map = new L.Map('map', {
+        center: new L.LatLng(52.485326, -1.895395),
+        minZoom: 10,
+        maxZoom: 17,
+        zoom: 11,
+        keyboard: false,
+        boxZoom: false,
+        doubleClickZoom: false,
+        scrollWheelZoom: false,
+        // maxBounds: [[33.154799,-116.586914],[50.190089,-77.563477]]
+    });
+    // Add base layer to group
+    map.addLayer(osm);
+        
+  /* Initialize the SVG layer */
+  map._initPathRoot()    
+
+  /* We simply pick up the SVG from the map object */
+  var svg = d3.select("#map").select("svg"),
+  g = svg.append("g");
+  
+  d3.json("/schools.json", function(collection) {
+    /* Add a LatLng object to each item in the dataset */
+    collection.objects.forEach(function(d) {
+      d.LatLng = new L.LatLng(d.latitude,
+                  d.longitude)
+    })
+    
+    var feature = g.selectAll("circle")
+      .data(collection.objects)
+      .enter().append("circle")
+      .style("stroke", "black")  
+      .style("opacity", .6) 
+      .style("fill", "indigo")
+      .attr("r", 6);  
+    
+    map.on("viewreset", update);
+    update();
+
+    function update() {
+      feature.attr("transform", 
+      function(d) { 
+        return "translate("+ 
+          map.latLngToLayerPoint(d.LatLng).x +","+ 
+          map.latLngToLayerPoint(d.LatLng).y +")";
+        }
+      )
+    }
+  })       
+</script>
+</body>
+</html>
