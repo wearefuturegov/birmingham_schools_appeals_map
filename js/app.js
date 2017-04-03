@@ -2,11 +2,13 @@
 var mapboxLight = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
 var mapboxStreets = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
 var mapboxBrum = 'https://api.mapbox.com/styles/v1/gazaston/cj0trhrvk00jj2rnprxencri0/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
+var CartoDB_Positron = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+var Esri_WorldGrayCanvas = 'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+
 var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-var osm = new L.TileLayer(mapboxBrum);
+var tiles = new L.TileLayer(CartoDB_Positron);
 
-// var layer = new L.StamenTileLayer('toner-background');
 var map = new L.Map('map', {
   center: new L.LatLng(52.485326, -1.895395),
   minZoom: 10,
@@ -14,40 +16,68 @@ var map = new L.Map('map', {
   zoom: 11,
   keyboard: false,
   boxZoom: false,
-  doubleClickZoom: false,
+  doubleClickZoom: true,
   scrollWheelZoom: false,
-  // maxBounds: [[33.154799,-116.586914],[50.190089,-77.563477]]
+  zoomControl: false
 });
+
+var mapControl = new L.Control.Zoom({ position: 'topright' }).addTo(map);
+
 // Add base layer to group
-map.addLayer(osm);
+map.addLayer(tiles);
 
 /* Initialize the SVG layer */
 map._initPathRoot()
 
-/* We simply pick up the SVG from the map object */
+// Set up the tooltip div
+var div = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+var allCircles = L.layerGroup().addTo(map);
+
+/* Get the SVG from the map object */
 var svg = d3.select("#map").select("svg"),
   g = svg.append("g");
 
-d3.json("/js/schools.json", function(collection) {
+d3.json("/js/secondary_schools_list_with_lat_lon_and_fake_distances.json", function(collection) {
   /* Add a LatLng object to each item in the dataset */
   collection.objects.forEach(function(d) {
     d.LatLng = new L.LatLng(d.latitude,
       d.longitude)
   })
 
-  var feature = g.selectAll("circle")
+  var school = g.selectAll("circle")
     .data(collection.objects)
     .enter().append("circle")
-    .style("stroke", "black")
-    .style("opacity", .6)
-    .style("fill", "#8b2388")
-    .attr("r", 6);
+    .style("opacity", .7)
+    .style("fill", "#333")
+    .attr("r", 4)
+    .attr("class", "school")
+    .on("click", function(d) {
+      showRadii(d);
+      schoolInfo(d);
+    })
+    .on("mouseover", function(d) {
+      div.transition()
+        .duration(200)
+        .style("opacity", .9);
+      div.html(d["Establishment Name"])
+        .style("left", (d3.event.pageX + 15) + "px")
+        .style("top", (d3.event.pageY - 0) + "px");
+    })
+    .on("mouseout", function(d) {
+      div.transition()
+        .duration(500)
+        .style("opacity", 0);
+    });
 
-  map.on("viewreset", update);
-  update();
+  map.on("viewreset", updateSchool);
 
-  function update() {
-    feature.attr("transform",
+  updateSchool();
+
+  function updateSchool() {
+    school.attr("transform",
       function(d) {
         return "translate(" +
           map.latLngToLayerPoint(d.LatLng).x + "," +
@@ -55,14 +85,88 @@ d3.json("/js/schools.json", function(collection) {
       }
     )
   }
+
+
+  function showRadii(d) {
+
+    if (!_.isEmpty(allCircles._layers)) {
+      allCircles.clearLayers();
+    }
+
+    // console.log(allCircles);
+
+    var radius1 = (d["Cut off Distances 2017"]);
+    var radius2 = (d["Cut off Distance 2016"]);
+    var radius3 = (d["Cut off Distance 2015"]);
+
+    circle1 = L.circle(d.LatLng, radius1, {
+      stroke: true,
+      opacity: 1,
+      fillColor: '#8b2388',
+      className: "red",
+      fillOpacity: 0.1,
+      clickable: false,
+      weight: 3,
+    }).addTo(allCircles);
+
+    circle2 = L.circle(d.LatLng, radius2, {
+      stroke: true,
+      opacity: 1,
+      fillColor: '#8b2388',
+      className: "green",
+      fillOpacity: 0.1,
+      clickable: false,
+      weight: 3,
+    }).addTo(allCircles);
+
+    circle3 = L.circle(d.LatLng, radius3, {
+      stroke: true,
+      opacity: 1,
+      fillColor: '#8b2388',
+      className: "blue",
+      fillOpacity: 0.1,
+      clickable: false,
+      weight: 3,
+    }).addTo(allCircles);
+
+  };
+
+  function metresToKilometres(distance) {
+    return distance / 1000;
+  };
+
+  function schoolInfo(d) {
+    console.log(d);
+    var clear = $("#clearMap");
+    clear.css( "display", "inline-block" );
+    clear.click(function() {
+      $(this).css( "display", "none" );
+    });
+    document.getElementById('schoolInfo').innerHTML = " <h2 class='school-name'>" + 
+      d["Establishment Name"] + 
+      "</h2>" + 
+      "<p>" + d["Street"] + ", " + d["Postcode"] +"</p>" +
+      "<h4>" + "Cut-off distances:" + "</h4>" +
+      "<h4><span class='radius-icon red'>&#8226;</span>2017: " + 
+      metresToKilometres(d["Cut off Distances 2017"]) + 
+      "km</h4>" +
+      "<h4><span class='radius-icon green'>&#8226;</span>2016: " + 
+      metresToKilometres(d["Cut off Distance 2016"]) + 
+      "km</h4>" +
+      "<h4><span class='radius-icon blue'>&#8226;</span>2015: " + 
+      metresToKilometres(d["Cut off Distance 2015"]) + 
+      "km</h4>" +
+      "<br />"
+  };
+
 });
 
+$("#clearMap").click(function() {
+  allCircles.clearLayers();
+  document.getElementById('schoolInfo').innerHTML = "";
+})
 
 // jQuery Geocodify
-var maxY = 52.177046;
-var minY = 52.746849;
-var minX = -2.574778;
-var maxX = -1.092997;
 
 var search_marker;
 var search_icon = L.AwesomeMarkers.icon({
@@ -77,32 +181,19 @@ $("#geocoder").geocodify({
     // Call function and place markers, circle on map
     geocodePlaceMarkersOnMap(location);
   },
+  regionBias: "GB"
 });
 
 function milesToMeters(miles) {
   return miles * 1069.344;
 };
 
-var circle;
+
 
 // This places marker, circle on map
 function geocodePlaceMarkersOnMap(location) {
   // Center the map on the result
   map.setView(new L.LatLng(location.lat(), location.lng()), 13);
-
-  // Remove circle if one is already on map
-  if (circle) {
-    map.removeLayer(circle);
-  }
-
-  // Create circle around marker with our selected radius
-  // circle = L.circle([location.lat(), location.lng()], milesToMeters( $('#radius-selected').val() ), {
-  //     color: '#8b2388',
-  //     fillColor: '#8b2388',
-  //     fillOpacity: 0.2,
-  //     stroke: false,
-  //     clickable: false
-  // }).addTo(map);
 
   // Remove marker if one is already on map
   if (search_marker) {
@@ -111,29 +202,8 @@ function geocodePlaceMarkersOnMap(location) {
 
   // Create marker
   search_marker = L.marker([location.lat(), location.lng()], {
-    // Allow user to drag marker
-    draggable: true,
     icon: search_icon
   });
-
-  // Reset map view on marker drag
-  search_marker.on('dragend', function(event) {
-    map.setView(event.target.getLatLng());
-    circle.setLatLng(event.target.getLatLng());
-
-    // This will determine how many markers are within the circle
-    // pointsInCircle( circle, milesToMeters( $('#radius-selected').val() ) );
-
-    // Redraw: Leaflet function
-    circle.redraw();
-
-    // Clear out address in geocoder
-    $('#geocoder-input').val('');
-  });
-
-  // This will determine how many markers are within the circle
-  // Called when points are initially loaded
-  // pointsInCircle( circle, milesToMeters( $('#radius-selected').val() ) );
 
   // Add marker to the map
   search_marker.addTo(map);

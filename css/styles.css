@@ -6,15 +6,41 @@ html {
 }
 
 body {
+  color: #333;
+  text-rendering:  optimizeLegibility;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 1em;
   font-weight: normal;
-  line-height: 1.5;
+  line-height: 1.35;
   margin: 0;
   padding: 0;
   width: 100%;
   font-family: 'Montserrat', sans-serif!important;
+  font-weight: 300;
+  /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"*/
 }
+
+h1, h2, h3, h4, h5 {
+  font-weight: normal;
+}
+
+html {font-size: 1em;}
+
+h1, h2, h3, h4 {
+  margin: 1em 0 1em;
+  font-weight: inherit;
+  line-height: 1.2;
+}
+
+h1 {font-size: 2.074em;}
+
+h2 {font-size: 1.728em;}
+
+h3 {font-size: 1.44em;}
+
+h4 {font-size: 1.2em;}
+
+small, .font_small {font-size: 0.8em;}
 
 
 /* Map */
@@ -29,28 +55,29 @@ body {
   top: 0;
 }
 
-/* Legend */
-#legend {
+/* Sidebar */
+#sidebar {
     padding: 0px 2%;
     width: 28%;
     z-index: 7;
     height: 100%;
     top: 0;
-    background-color: #8b2388;
+    background-color: #fff;
     position: absolute;
-    color: #fff;
+    color: #333;
 }
 
-#json_one_results {
-    font-weight: bold;
-    font-size: 20px;
+#logo {
+  padding-top: 2em;
+  background-color: #fff;
 }
 
 /* Geocoder */
+
 .geocoder {
   width: 100%;
   font-size: 17px;
-  margin: 5px 0px 10px 0px;
+  margin: 0 0 2em 0;
   padding: 0;
   vertical-align: middle;
 }
@@ -72,8 +99,8 @@ body {
   min-height: 20px;
   display: -moz-inline-stack;
   display: inline-block;
-  padding-top: 14px;
-  padding-bottom: 15px;
+  padding-top: 13px;
+  padding-bottom: 16px;
   padding-left: 2%;
   padding-right: 2%;
   border: 1px solid #ccc;
@@ -126,11 +153,6 @@ body {
   background-image: linear-gradient(to bottom, #0088cc, #0077b3);
 }
 
-#logo {
-  padding-top: 2em;
-  background-color: #8b2388;
-}
-
 /*leaflet overrides*/
 
 .leaflet-container {
@@ -144,4 +166,73 @@ body {
 
 .leaflet-popup-content p {
   font-size: 1em;
+}
+
+/*Misc*/
+
+svg {
+  fill: transparent;
+}
+
+div.tooltip { 
+  position: absolute;     
+  text-align: center;     
+  width: 120px;          
+  padding: 1em;       
+  font: 1em sans-serif;    
+  background: #000; 
+  color: #fff;
+  border: 0px;    
+  border-radius: 3px;     
+  pointer-events: none;     
+}
+
+.school:hover {
+  cursor: pointer;
+}
+
+.school-name {
+  margin-bottom: 0.2em;
+}
+
+.radius-icon {
+  height: 1em;
+  width: 1em;
+  border-radius: 1em;
+  font-size: 2.8em;
+  line-height: 0;
+  position: relative;
+  top: 10px;
+  margin-right: 0.1em;
+}
+
+.red {
+  color: #FF4136;
+  stroke: #FF4136;
+  fill: #FF4136;
+}
+
+.green {
+  color: #2ECC40;
+  stroke: #2ECC40;
+  fill: #2ECC40;
+}
+
+.blue {
+  color: #0074D9;
+  stroke: #0074D9;
+  fill: #0074D9;
+}
+
+#clearMap {
+/*  position: absolute;
+  bottom: 0;
+  right: 0;*/
+  display: none;
+  background-color: #8a2188;
+  border-radius: 5px;
+  padding: 0.5em;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
 }
