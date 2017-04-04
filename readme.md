@@ -21,6 +21,7 @@
 
 ## To-dos:
 
+* the colours need harmonising and checking for accessibility issues
 * the app currently uses fake data from `/data/all_schools_list_with_lat_lon_and_fake_distances.csv`
 * the council should add its own google maps API key to the `<head>` of `index.html` 
 
