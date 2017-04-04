@@ -105,6 +105,19 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     // generate initial schools
     updateSchools(collection);
 
+    // when the map is redrawn (e.g. on zoom, scroll) update the positions of schools
+    map.on("viewreset", updateSchoolPositions);
+    updateSchoolPositions();
+    function updateSchoolPositions() {
+      school.attr("transform",
+        function(d) {
+          return "translate(" +
+            map.latLngToLayerPoint(d.LatLng).x + "," +
+            map.latLngToLayerPoint(d.LatLng).y + ")";
+        }
+      )
+    }
+
     // handle select onchange event
     d3.select('#phase')
       .on('change', function() {
