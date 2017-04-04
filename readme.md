@@ -17,6 +17,7 @@
 * geocoding is handled by [jQuery-geocodify](https://github.com/datadesk/jquery-geocodify)
 * map markers are provided using [AwesomeMarkers](https://github.com/lvoogdt/Leaflet.awesome-markers) and [FontAwesome](http://fontawesome.io/)
 * fonts from [google fonts](https://fonts.google.com/)
+* form styles from [bootstrap](http://getbootstrap.com/)
 
 ## To-dos:
 
