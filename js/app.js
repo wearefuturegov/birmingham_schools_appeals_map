@@ -66,7 +66,13 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     // update existing elements
     school
       .style("opacity", .7)
-      .style("fill", "#333")
+      .style("fill", function(d) {
+        if (d["Phase of Education"] === "Primary") {
+          return "#8b2388"
+        } else {
+          return "#f59f00"
+        }
+      })
       .attr("r", 4)
       .attr("id", function(d) { return 'dfe_' + d['DfE'] } )
       .attr("class", "school")
@@ -103,7 +109,7 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     }
 
     // generate initial schools
-    updateSchools(primary);
+    updateSchools(collection);
 
     // when the map is redrawn (e.g. on zoom, scroll) update the positions of schools
     map.on("viewreset", updateSchoolPositions);
