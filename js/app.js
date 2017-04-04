@@ -209,4 +209,29 @@ function geocodePlaceMarkersOnMap(location) {
   search_marker.addTo(map);
 
   // Close geocodePlaceMarkersOnMap
-}
+};
+
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
+function geocodeFromParams() {
+  postcode = getUrlParameter('postcode');
+  if (postcode) {
+    $('#geocoder-input').val(postcode).submit()
+    setTimeout(function(){ 
+      $('#geocoder-button').click();
+    }, 100);
+  }
+};
+
+$( document ).ready(function() {
+  geocodeFromParams();
+});
+
+
+// window.location = String(window.location).match(/(.*?)\?/)[1];
+// window.location.href.replace("postcode="+postcode, "postcode="+"bar");

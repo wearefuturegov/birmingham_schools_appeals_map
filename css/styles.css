@@ -99,8 +99,8 @@ small, .font_small {font-size: 0.8em;}
   min-height: 20px;
   display: -moz-inline-stack;
   display: inline-block;
-  padding-top: 13px;
-  padding-bottom: 16px;
+  padding-top: 14px;
+  padding-bottom: 15px;
   padding-left: 2%;
   padding-right: 2%;
   border: 1px solid #ccc;
