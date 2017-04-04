@@ -3,6 +3,7 @@ var CartoDB_Positron = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.p
 
 var tiles = new L.TileLayer(CartoDB_Positron);
 
+// set up the leaflet.js map
 var map = new L.Map('map', {
   center: new L.LatLng(52.485326, -1.895395),
   minZoom: 10,
@@ -15,6 +16,7 @@ var map = new L.Map('map', {
   zoomControl: false
 });
 
+// add a custom map controller
 var mapControl = new L.Control.Zoom({ position: 'topright' }).addTo(map);
 
 // Add base layer to group
@@ -28,23 +30,22 @@ var div = d3.select("body").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 
+// add the layerGroup to the map
 var allCircles = L.layerGroup().addTo(map);
 
-/* Get the SVG from the map object */
+// Get the svg from the map object and append the d3 group svg element
 var svg = d3.select("#map").select("svg"),
   g = svg.append("g");
 
+// import the data
 d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(collection) {
-  /* Add a LatLng object to each item in the dataset */
+  // Add a LatLng object to each item in the dataset
   collection.forEach(function(d) {
     d.LatLng = new L.LatLng(d.latitude,
       d.longitude)
   })
 
-
-
-
-
+  // make variables for each type of school by filtering the data
   var primary = collection.filter(function(d){ 
     return (d["Phase of Education"] === "Primary")
   });
@@ -53,11 +54,8 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     return (d["Phase of Education"] === "Secondary")
   });
 
-
-
+  // put the d3 code in a function
   function updateSchools(newData) {
-
-
     // bind data
     var school = g.selectAll("circle")
       .data(newData)
@@ -79,11 +77,12 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
             map.latLngToLayerPoint(d.LatLng).y + ")";
         }
       )
+      // show the radii and school info on click
       .on("click", function(d) {
         showRadii(d);
         schoolInfo(d);
-        // addSchoolToQueryString(d);
       })
+      // show the school name tooltip on mouseover
       .on("mouseover", function(d) {
         div.transition()
           .duration(200)
@@ -92,21 +91,21 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
           .style("left", (d3.event.pageX + 15) + "px")
           .style("top", (d3.event.pageY - 0) + "px");
       })
+      // hide the school name tooltip on mouseout
       .on("mouseout", function(d) {
         div.transition()
           .duration(500)
           .style("opacity", 0);
       });
 
-      // remove old elements
+      // remove old d3 elements
       school.exit().remove();
-
     }
 
-    // generate initial legend
+    // generate initial schools
     updateSchools(collection);
 
-    // handle on click event
+    // handle select onchange event
     d3.select('#phase')
       .on('change', function() {
         var newData = eval(d3.select(this).property('value'));
@@ -116,36 +115,18 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
         document.getElementById('schoolInfo').innerHTML = "";
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
   function showRadii(d) {
-
+    // clear the schools from the map when another is added
     if (!_.isEmpty(allCircles._layers)) {
       allCircles.clearLayers();
     }
 
-    // console.log(allCircles);
-
+    // load each year's cutoff distances into a variable
     var radius1 = (d["Cut off Distances 2017"]);
     var radius2 = (d["Cut off Distance 2016"]);
     var radius3 = (d["Cut off Distance 2015"]);
 
+    // generate a circle for each cutoff distance
     circle1 = L.circle(d.LatLng, radius1, {
       stroke: true,
       opacity: 1,
@@ -155,7 +136,6 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
       clickable: false,
       weight: 3,
     }).addTo(allCircles);
-
     circle2 = L.circle(d.LatLng, radius2, {
       stroke: true,
       opacity: 1,
@@ -165,7 +145,6 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
       clickable: false,
       weight: 3,
     }).addTo(allCircles);
-
     circle3 = L.circle(d.LatLng, radius3, {
       stroke: true,
       opacity: 1,
@@ -174,21 +153,32 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
       fillOpacity: 0.1,
       clickable: false,
       weight: 3,
+    // add each circle to the layerGroup
     }).addTo(allCircles);
 
   };
 
+  // helper to convert meters to km
   function metresToKilometres(distance) {
     return distance / 1000;
   };
 
+  // helper to convert miles to metres (unused, but left for posterity)
+  function milesToMeters(miles) {
+    return miles * 1069.344;
+  };
+
+  // render further info for each school into the sidebar when clicked on the map
   function schoolInfo(d) {
     console.log(d);
     var clear = $("#clearMap");
+    // show the 'clear map' button when school info is displayed
     clear.css( "display", "inline-block" );
+    // hide the 'clear map' button once clicked
     clear.click(function() {
       $(this).css( "display", "none" );
     });
+    // render the school info to the sidebar
     document.getElementById('schoolInfo').innerHTML = " <h3 class='school-name'>" + 
       d["Establishment Name"] + 
       "</h3>" + 
@@ -208,17 +198,17 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
 
 });
 
+// handle the 'clear map' click event
 $("#clearMap").click(function() {
   allCircles.clearLayers();
   document.getElementById('schoolInfo').innerHTML = "";
 })
 
 // jQuery Geocodify
-
 var search_marker;
 var search_icon = L.AwesomeMarkers.icon({
   icon: 'icon-circle',
-  color: 'green'
+  color: 'purple'
 });
 
 $("#geocoder").geocodify({
@@ -231,18 +221,12 @@ $("#geocoder").geocodify({
   regionBias: "GB"
 });
 
-function milesToMeters(miles) {
-  return miles * 1069.344;
-};
-
-
-
-// This places marker, circle on map
+// place the marker on map
 function geocodePlaceMarkersOnMap(location) {
-  // Center the map on the result
+  // centre the map on the result
   map.setView(new L.LatLng(location.lat(), location.lng()), 13);
 
-  // Remove marker if one is already on map
+  // remove marker if one is already on map
   if (search_marker) {
     map.removeLayer(search_marker);
   }
@@ -255,37 +239,41 @@ function geocodePlaceMarkersOnMap(location) {
   // Add marker to the map
   search_marker.addTo(map);
 
-  // Close geocodePlaceMarkersOnMap
 };
 
-function getUrlParameter(name) {
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-  var results = regex.exec(location.search);
-  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
 
-function geocodeFromParams() {
-  postcode = getUrlParameter('postcode');
-  if (postcode) {
-    $('#geocoder-input').val(postcode).submit()
-    setTimeout(function(){ 
-      $('#geocoder-button').click();
-    }, 100);
-  }
-};
 
-function schoolFromParams(d) {
-  school = getUrlParameter('school');
-  if (school) {
-    console.log(school);
-  }
-};
 
-$( document ).ready(function() {
-  geocodeFromParams();
-  schoolFromParams();
-});
+// WIP stuff
+
+// function getUrlParameter(name) {
+//   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+//   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+//   var results = regex.exec(location.search);
+//   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+// };
+
+// function geocodeFromParams() {
+//   postcode = getUrlParameter('postcode');
+//   if (postcode) {
+//     $('#geocoder-input').val(postcode).submit()
+//     setTimeout(function(){ 
+//       $('#geocoder-button').click();
+//     }, 100);
+//   }
+// };
+
+// function schoolFromParams(d) {
+//   school = getUrlParameter('school');
+//   if (school) {
+//     console.log(school);
+//   }
+// };
+
+// $( document ).ready(function() {
+//   geocodeFromParams();
+//   schoolFromParams();
+// });
 
 // function addSchoolToQueryString(d) {
 //   console.log(window.location.href)
