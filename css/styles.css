@@ -211,21 +211,21 @@ div.tooltip {
 }
 
 .red {
-  color: #FF4136;
-  stroke: #FF4136;
-  fill: #FF4136;
+  color: #e03131;
+  stroke: #e03131;
+  fill: #e03131;
 }
 
 .green {
-  color: #2ECC40;
-  stroke: #2ECC40;
-  fill: #2ECC40;
+  color: #37b24d;
+  stroke: #37b24d;
+  fill: #37b24d;
 }
 
 .blue {
-  color: #0074D9;
-  stroke: #0074D9;
-  fill: #0074D9;
+  color: #329af0;
+  stroke: #329af0;
+  fill: #329af0;
 }
 
 #clearMap {
