@@ -16,8 +16,13 @@ How it works:
 * data is parsed and manipulated using [d3.js](https://d3js.org/)
 * geocoding is handled by [jQuery-geocodify](https://github.com/datadesk/jquery-geocodify)
 
+To-dos:
+
+* the app currently uses fake data from `/data/all_schools_list_with_lat_lon_and_fake_distances.csv`
+* the council should add its own google maps API key to the `<head>` of `index.html` 
+
 Possible improvements:
 
-* app.js could probably be cleaned up and more stuff abstracted into functions
+* `app.js` could probably be cleaned up and more stuff abstracted into functions
 * have a way to display a location and a highlighted school from a query string, to make such combinations more shareable
 * move cdn-linked files to locally referenced
