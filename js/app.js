@@ -183,7 +183,6 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
 
   // render further info for each school into the sidebar when clicked on the map
   function schoolInfo(d) {
-    console.log(d);
     var clear = $("#clearMap");
     // show the 'clear map' button when school info is displayed
     clear.css( "display", "inline-block" );
