@@ -103,7 +103,7 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     }
 
     // generate initial schools
-    updateSchools(collection);
+    updateSchools(primary);
 
     // when the map is redrawn (e.g. on zoom, scroll) update the positions of schools
     map.on("viewreset", updateSchoolPositions);
