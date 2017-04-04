@@ -47,46 +47,97 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
       d.longitude)
   })
 
-  var school = g.selectAll("circle")
-    .data(collection)
-    .enter().append("circle")
-    .style("opacity", .7)
-    .style("fill", "#333")
-    .attr("r", 4)
-    .attr("id", function(d) { return 'dfe_' + d['DfE'] } )
-    .attr("class", "school")
-    .on("click", function(d) {
-      showRadii(d);
-      schoolInfo(d);
-      // addSchoolToQueryString(d);
-    })
-    .on("mouseover", function(d) {
-      div.transition()
-        .duration(200)
-        .style("opacity", .9);
-      div.html(d["Establishment Name"])
-        .style("left", (d3.event.pageX + 15) + "px")
-        .style("top", (d3.event.pageY - 0) + "px");
-    })
-    .on("mouseout", function(d) {
-      div.transition()
-        .duration(500)
-        .style("opacity", 0);
+
+
+
+
+  var primary = collection.filter(function(d){ 
+    return (d["Phase of Education"] === "Primary")
+  });
+
+  var secondary = collection.filter(function(d){ 
+    return (d["Phase of Education"] === "Secondary")
+  });
+
+
+
+  function updateSchools(newData) {
+
+
+    // bind data
+    var school = g.selectAll("circle")
+      .data(newData)
+
+    // add new elements
+    school.enter().append("circle")
+
+    // update existing elements
+    school
+      .style("opacity", .7)
+      .style("fill", "#333")
+      .attr("r", 4)
+      .attr("id", function(d) { return 'dfe_' + d['DfE'] } )
+      .attr("class", "school")
+      .attr("transform",
+        function(d) {
+          return "translate(" +
+            map.latLngToLayerPoint(d.LatLng).x + "," +
+            map.latLngToLayerPoint(d.LatLng).y + ")";
+        }
+      )
+      .on("click", function(d) {
+        showRadii(d);
+        schoolInfo(d);
+        // addSchoolToQueryString(d);
+      })
+      .on("mouseover", function(d) {
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html(d["Establishment Name"])
+          .style("left", (d3.event.pageX + 15) + "px")
+          .style("top", (d3.event.pageY - 0) + "px");
+      })
+      .on("mouseout", function(d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+
+      // remove old elements
+      school.exit().remove();
+
+    }
+
+    // generate initial legend
+    updateSchools(collection);
+
+    // handle on click event
+    d3.select('#phase')
+      .on('change', function() {
+        var newData = eval(d3.select(this).property('value'));
+        updateSchools(newData);
+        allCircles.clearLayers();
+        $('#clearMap').css( "display", "none" );
+        document.getElementById('schoolInfo').innerHTML = "";
     });
 
-  map.on("viewreset", updateSchool);
 
-  updateSchool();
 
-  function updateSchool() {
-    school.attr("transform",
-      function(d) {
-        return "translate(" +
-          map.latLngToLayerPoint(d.LatLng).x + "," +
-          map.latLngToLayerPoint(d.LatLng).y + ")";
-      }
-    )
-  }
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
 
 
   function showRadii(d) {
