@@ -189,20 +189,20 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
     clear.click(function() {
       $(this).css( "display", "none" );
     });
-    document.getElementById('schoolInfo').innerHTML = " <h2 class='school-name'>" + 
+    document.getElementById('schoolInfo').innerHTML = " <h3 class='school-name'>" + 
       d["Establishment Name"] + 
-      "</h2>" + 
+      "</h3>" + 
       "<p>" + d["Street"] + ", " + d["Postcode"] +"</p>" +
-      "<h4>" + "Cut-off distances:" + "</h4>" +
-      "<h4><span class='radius-icon red'>&#8226;</span>2017: " + 
+      "<h5>" + "Cut-off distances:" + "</h5>" +
+      "<h5><span class='radius-icon red'>&#8226;</span>2017: " + 
       metresToKilometres(d["Cut off Distances 2017"]) + 
-      "km</h4>" +
-      "<h4><span class='radius-icon green'>&#8226;</span>2016: " + 
+      "km</h5>" +
+      "<h5><span class='radius-icon green'>&#8226;</span>2016: " + 
       metresToKilometres(d["Cut off Distance 2016"]) + 
-      "km</h4>" +
-      "<h4><span class='radius-icon blue'>&#8226;</span>2015: " + 
+      "km</h5>" +
+      "<h5><span class='radius-icon blue'>&#8226;</span>2015: " + 
       metresToKilometres(d["Cut off Distance 2015"]) + 
-      "km</h4>" +
+      "km</h5>" +
       "<br />"
   };
 
