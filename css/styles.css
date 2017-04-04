@@ -228,6 +228,18 @@ div.tooltip {
   fill: #329af0;
 }
 
+.purple {
+  color: #8b2388;
+  stroke: #8b2388;
+  fill: #8b2388;
+}
+
+.yellow {
+  color: #f59f00;
+  stroke: #f59f00;
+  fill: #f59f00;
+}
+
 #clearMap {
 /*  position: absolute;
   bottom: 0;
