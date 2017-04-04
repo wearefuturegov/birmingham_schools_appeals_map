@@ -53,10 +53,12 @@ d3.json("/js/secondary_schools_list_with_lat_lon_and_fake_distances.json", funct
     .style("opacity", .7)
     .style("fill", "#333")
     .attr("r", 4)
+    .attr("id", function(d) { return 'dfe_' + d['DfE'] } )
     .attr("class", "school")
     .on("click", function(d) {
       showRadii(d);
       schoolInfo(d);
+      // addSchoolToQueryString(d);
     })
     .on("mouseover", function(d) {
       div.transition()
@@ -212,10 +214,10 @@ function geocodePlaceMarkersOnMap(location) {
 };
 
 function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 function geocodeFromParams() {
@@ -228,10 +230,23 @@ function geocodeFromParams() {
   }
 };
 
+function schoolFromParams(d) {
+  school = getUrlParameter('school');
+  if (school) {
+    console.log(school);
+  }
+};
+
 $( document ).ready(function() {
   geocodeFromParams();
+  schoolFromParams();
 });
 
+// function addSchoolToQueryString(d) {
+//   console.log(window.location.href)
+//   window.history.pushState(null, null, window.location.href + "&school=dfe_" + d["DfE"]);
+// }
 
 // window.location = String(window.location).match(/(.*?)\?/)[1];
 // window.location.href.replace("postcode="+postcode, "postcode="+"bar");
+
