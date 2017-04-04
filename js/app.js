@@ -40,15 +40,15 @@ var allCircles = L.layerGroup().addTo(map);
 var svg = d3.select("#map").select("svg"),
   g = svg.append("g");
 
-d3.json("/js/secondary_schools_list_with_lat_lon_and_fake_distances.json", function(collection) {
+d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(collection) {
   /* Add a LatLng object to each item in the dataset */
-  collection.objects.forEach(function(d) {
+  collection.forEach(function(d) {
     d.LatLng = new L.LatLng(d.latitude,
       d.longitude)
   })
 
   var school = g.selectAll("circle")
-    .data(collection.objects)
+    .data(collection)
     .enter().append("circle")
     .style("opacity", .7)
     .style("fill", "#333")
