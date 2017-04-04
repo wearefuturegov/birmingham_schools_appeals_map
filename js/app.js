@@ -57,7 +57,7 @@ d3.csv("/data/all_schools_list_with_lat_lon_and_fake_distances.csv", function(co
   // put the d3 code in a function
   function updateSchools(newData) {
     // bind data
-    var school = g.selectAll("circle")
+    school = g.selectAll("circle")
       .data(newData)
 
     // add new elements
