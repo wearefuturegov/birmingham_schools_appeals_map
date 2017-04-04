@@ -1,12 +1,6 @@
-// Base map
-var mapboxLight = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
-var mapboxStreets = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
-var mapboxBrum = 'https://api.mapbox.com/styles/v1/gazaston/cj0trhrvk00jj2rnprxencri0/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZ2F6YXN0b24iLCJhIjoiY2loa21hNzRoMG50eHQ0bHp2azNpeHhwaiJ9.h81FekBCVUufbqxc9ywySQ';
+// Base map 
 var CartoDB_Positron = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
-var Esri_WorldGrayCanvas = 'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 
-var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 var tiles = new L.TileLayer(CartoDB_Positron);
 
 var map = new L.Map('map', {
