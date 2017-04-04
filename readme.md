@@ -15,6 +15,8 @@
 * locations are plotted using [leaflet.js](http://leafletjs.com/)
 * data is parsed and manipulated using [d3.js](https://d3js.org/)
 * geocoding is handled by [jQuery-geocodify](https://github.com/datadesk/jquery-geocodify)
+* map markers are provided using [AwesomeMarkers](https://github.com/lvoogdt/Leaflet.awesome-markers) and [FontAwesome](http://fontawesome.io/)
+* fonts from [google fonts](https://fonts.google.com/)
 
 ## To-dos:
 
