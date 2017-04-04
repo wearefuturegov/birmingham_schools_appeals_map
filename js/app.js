@@ -220,7 +220,7 @@ $("#clearMap").click(function() {
 var search_marker;
 var search_icon = L.AwesomeMarkers.icon({
   icon: 'icon-circle',
-  color: 'purple'
+  color: 'darkpurple'
 });
 
 $("#geocoder").geocodify({
